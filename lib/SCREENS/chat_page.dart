@@ -1,7 +1,8 @@
-import 'package:chatbot_ai/MODEL/chat_message_model.dart';
+import 'dart:math';
+
+import 'package:chatbot_ai/HELPER/bg_helper.dart';
+import 'package:chatbot_ai/HELPER/random_queries.dart';
 import 'package:chatbot_ai/PROVIDER/chat_provider.dart';
-import 'package:chatbot_ai/PROVIDER/session_counter.dart';
-import 'package:chatbot_ai/SCREENS/history_screen.dart';
 import 'package:chatbot_ai/WIDGETS/message_card.dart';
 import 'package:flutter/material.dart';
 import 'package:google_generative_ai/google_generative_ai.dart';
@@ -12,14 +13,19 @@ class ChatPage extends StatelessWidget {
   ChatPage({Key? key}) : super(key: key);
 
   final TextEditingController _textController = TextEditingController();
-  final List<ChatMessage> chatHistory = [];
+  // final List<ChatMessage> chatHistory = [];
+
   @override
   Widget build(BuildContext context) {
     final Size size = MediaQuery.of(context).size;
-    final scounter = Provider.of<SessionCounterProvider>(context, listen: false);
+    queries.shuffle();
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Gemini AI'),
+        surfaceTintColor: Colors.transparent,
+        title: const Text(
+          'Mind Mate AI',
+          style: TextStyle(fontFamily: 'cavier', fontWeight: FontWeight.bold),
+        ),
       ),
       body: ChangeNotifierProvider.value(
         value: Provider.of<ChatScreenState>(context),
@@ -27,25 +33,28 @@ class ChatPage extends StatelessWidget {
           builder: (context, state, child) {
             return Stack(
               children: [
-                ListView.custom(
-                  padding: const EdgeInsets.fromLTRB(15, 0, 15, 90),
-                  reverse: true,
-                  controller: state.scrollController,
-                  childrenDelegate: SliverChildBuilderDelegate(
-                    (context, index) {
-                      var content = state.history.reversed.toList()[index];
-                      var text = content.parts
-                          .whereType<TextPart>()
-                          .map<String>((e) => e.text)
-                          .join('');
-                      return MessageCard(
-                        sendByUser: content.role == 'user',
-                        message: text,
-                      );
-                    },
-                    childCount: state.history.length,
-                  ),
-                ),
+                state.history.isNotEmpty
+                    ? ListView.builder(
+                        padding: const EdgeInsets.fromLTRB(15, 0, 15, 90),
+                        reverse: true,
+                        controller: state.scrollController,
+                        itemCount: state.history.length,
+                        itemBuilder: (context, index) {
+                            var content =
+                                state.history.reversed.toList()[index];
+                            var text = content.parts
+                                .whereType<TextPart>()
+                                .map<String>((e) => e.text)
+                                .join('');
+                            return MessageCard(
+                              sendByUser: content.role == 'user',
+                              message: text,
+                            );
+                        },
+                      )
+                    :const Center(
+                        child: Text(" How can I assist you today?"),
+                      ),
                 Align(
                   alignment: Alignment.bottomCenter,
                   child: Container(
@@ -63,7 +72,7 @@ class ChatPage extends StatelessWidget {
                           child: SizedBox(
                             height: size.height * 0.07,
                             child: TextField(
-                              cursorColor: Colors.amber,
+                              cursorColor: Colors.blue.withOpacity(.6),
                               controller: _textController,
                               autofocus: true,
                               decoration: InputDecoration(
@@ -82,29 +91,23 @@ class ChatPage extends StatelessWidget {
                           ),
                         ),
                         const SizedBox(width: 10),
-                        GestureDetector(
-                          onDoubleTap: () {
-                            // Navigator.push(
-                            //     context,
-                            //     MaterialPageRoute(
-                            //         builder: (context) => ChatHistoryPage(
-                            //             chatHistory: state.chatHistory)));
-                          },
+                        InkWell(
                           onTap: () {
-                            state.history.add(Content(
-                                'user', [TextPart(_textController.text)]));
-                            state.sendChatMessage(
-                              _textController.text,
-                              state.history.length,
-                            );
-                            _textController.clear();
+                            if (_textController.text.isNotEmpty) {
+                              state.history.add(Content(
+                                  'user', [TextPart(_textController.text)]));
+                              state.sendChatMessage(_textController.text,
+                                  state.history.length, context);
+
+                              _textController.clear();
+                            }
                           },
                           child: Container(
                             width: 50,
                             height: 50,
                             alignment: Alignment.center,
                             decoration: BoxDecoration(
-                              color: Colors.amber,
+                              color: Colors.blue.withOpacity(.5),
                               shape: BoxShape.circle,
                               boxShadow: [
                                 BoxShadow(

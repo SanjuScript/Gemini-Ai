@@ -1,0 +1,18 @@
+List<String> queries = [
+  "Suggest time management tips",
+  "Ideas for a creative writing project?",
+  "Assist me in drafting an email?",
+  "Write a Python code to print a star diagram",
+  "Recommendations for improving sleep quality?",
+  "Tips for staying focused while studying or working?",
+  "Assist me in creating a budget plan?",
+  "Suggest healthy meal prep ideas for the week?",
+  "Recommendations for beginner-friendly workouts?",
+  "Ideas for organizing and decluttering my space?",
+  "Assist me in planning a weekend getaway?",
+  "Tips for reducing stress and anxiety?",
+  "Recommendations for self-care practices?",
+  "Assist me in setting and achieving personal goals?",
+  "Ideas for DIY home improvement projects?",
+  "Suggest ways to boost creativity and inspiration?",
+];

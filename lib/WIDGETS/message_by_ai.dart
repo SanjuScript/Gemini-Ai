@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:chatbot_ai/HELPER/url_launcher.dart';
 import 'package:chatbot_ai/PROVIDER/clipboard_provider.dart';
 import 'package:flutter/material.dart';
@@ -31,7 +33,7 @@ class MessageByAi extends StatelessWidget {
                   ),
                   padding: const EdgeInsets.all(12),
                   decoration: BoxDecoration(
-                    color: Colors.grey.shade200,
+                    color: Colors.green.withOpacity(.5),
                     borderRadius: const BorderRadius.only(
                       topLeft: Radius.circular(16),
                       topRight: Radius.circular(16),
@@ -43,7 +45,9 @@ class MessageByAi extends StatelessWidget {
                     selectable: true,
                     data: data,
                     onTapLink: (text, href, title) async {
-                      await UrlLaunch.launchurl(context, text);
+                      // log('Text :$text');
+                      // log('Link:$href');
+                      await UrlLaunch.launchurl(context, href);
                     },
                   ),
                 ),

@@ -1,130 +1,91 @@
+import 'package:chatbot_ai/HELPER/app_bar.dart';
+import 'package:chatbot_ai/HELPER/bg_helper.dart';
 import 'package:chatbot_ai/SCREENS/chat_page.dart';
-import 'package:chatbot_ai/SCREENS/simply_page.dart';
+import 'package:chatbot_ai/WIDGETS/positioned_text.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import 'package:chatbot_ai/controller/chat_controller.dart';
-import 'package:chatbot_ai/model/chat_message_model.dart';
-import 'package:chatbot_ai/widgets/history_message_card.dart';
-import 'package:chatbot_ai/widgets/styled_containers.dart';
+import 'package:flutter/widgets.dart';
 
-class HomePage extends StatefulWidget {
+class HomePage extends StatelessWidget {
   const HomePage({Key? key}) : super(key: key);
-
-  @override
-  _HomePageState createState() => _HomePageState();
-}
-
-class _HomePageState extends State<HomePage> {
-  late Future<List<String>> _sessionIds;
-  late Future<List<ChatMessage>> chatsee;
-  @override
-  void initState() {
-    super.initState();
-    _sessionIds = ChatHistoryManager.getSessionIds();
-  }
 
   @override
   Widget build(BuildContext context) {
     final Size size = MediaQuery.of(context).size;
     return Scaffold(
-      body: Center(
-        child: SingleChildScrollView(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: [
-              SizedBox(
-                height: size.height * 0.12,
+      floatingActionButton: InkWell(
+        onTap: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => ChatPage()),
+          );
+        },
+        child: Container(
+          height: size.height * .07,
+          width: size.width * .40,
+          decoration: BoxDecoration(
+              color: Colors.blue.withOpacity(.9),
+              border: Border.all(color: Colors.blue, width: 2),
+              borderRadius: BorderRadius.circular(20),
+              boxShadow: [
+                BoxShadow(
+                    color: Colors.blue.withOpacity(.9),
+                    spreadRadius: 2,
+                    offset: const Offset(2, -2)),
+                const BoxShadow(
+                    color: Colors.blue, blurRadius: 8, offset: Offset(-2, 2))
+              ]),
+          child: Center(
+            child: Text(
+              'New Chat',
+              style: TextStyle(
+                fontFamily: 'rounder',
+                fontWeight: FontWeight.w300,
+                letterSpacing: .6,
+                fontSize: 22,
+                color: Colors.white.withOpacity(.8),
               ),
-              SizedBox(
-                height: size.height * 0.16,
-                width: size.width * 0.90,
-                child: StyledContainer(
-                  buttontapped: () {
-                    // Navigator.push(
-                    //   context,
-                    //   MaterialPageRoute(builder: (context) => ChatPage()),
-                    // );
-                      Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => JioSaavnSongs()),
-                    );
-                  },
-                  color: Color.fromARGB(205, 63, 179, 199),
-                  buttonText: 'New chat..',
-                ),
-              ),
-              FutureBuilder<List<String>>(
-                future: _sessionIds,
-                builder: (context, snapshot) {
-                  if (snapshot.connectionState == ConnectionState.waiting) {
-                    return Center(child: CircularProgressIndicator());
-                  }
-                  if (snapshot.hasError) {
-                    return Center(child: Text('Error: ${snapshot.error}'));
-                  }
-                  final sessionIds = snapshot.data!;
-                  // setState(() {
-
-                  // });
-
-                  return Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: sessionIds.map((sessionId) {
-                      return FutureBuilder<List<ChatMessage>>(
-                        future:
-                            ChatHistoryManager.getMessagesForSession(sessionId)
-                                as Future<List<ChatMessage>>?,
-                        builder: (context, snapshot) {
-                          if (snapshot.connectionState ==
-                              ConnectionState.waiting) {
-                            return Center(child: CircularProgressIndicator());
-                          }
-                          if (snapshot.data!.isEmpty) {
-                            return Text(snapshot.data.toString());
-                          }
-                          if (snapshot.hasError) {
-                            return Center(
-                                child: Text('Error: ${snapshot.error}'));
-                          }
-                          final sessionMessages = snapshot.data!;
-
-                          return Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Text('Session: $sessionId'),
-                              ),
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: sessionMessages.map((message) {
-                                  return ListTile(
-                                    title: Text(message.sender),
-                                    onTap: () {
-                                      Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                            builder: (context) =>
-                                                HistoryMessageCard(
-                                                    sessionId: sessionId)),
-                                      );
-                                    },
-                                    subtitle: Text(message.message),
-                                  );
-                                }).toList(),
-                              ),
-                              Divider(),
-                            ],
-                          );
-                        },
-                      );
-                    }).toList(),
-                  );
-                },
-              ),
-            ],
+            ),
           ),
         ),
+      ),
+      body: Stack(
+        children: [
+          CustomAppBar2(),
+          Positioned(
+            top: size.height * .10,
+            right: 15,
+            left: 15,
+            bottom: size.height * .22,
+            child: Text(
+              'Mind Mate AI',
+              textAlign: TextAlign.start,
+              style: TextStyle(
+                fontFamily: 'rounder',
+                fontWeight: FontWeight.w300,
+                letterSpacing: .6,
+                fontSize: 25,
+                color: Colors.white.withOpacity(.8),
+              ),
+            ),
+          ),
+          Positioned(
+            top: size.height * .18,
+            right: 15,
+            left: 15,
+            bottom: size.height * .20,
+            child: Text(
+              """Mind Mate" is your intelligent companion in the digital world, offering a personalized and insightful chat experience. With Mind Mate, engage in meaningful conversations, seek advice, and discover new perspectives. Whether you're looking for a friendly chat or seeking guidance on a wide range of topics, Mind Mate is here to support your mental well-being and foster a deeper connection with your thoughts and ideas. Explore the realms of knowledge and creativity with your trusted ally, Mind Mate, your gateway to a more insightful and fulfilling digital experience.""",
+              style: TextStyle(
+                fontFamily: 'rounder',
+                fontWeight: FontWeight.w300,
+                letterSpacing: .6,
+                fontSize: 15,
+                color: Colors.white.withOpacity(.8),
+              ),
+            ),
+          ),
+        PositionedText()
+        ],
       ),
     );
   }

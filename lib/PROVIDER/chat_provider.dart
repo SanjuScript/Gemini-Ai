@@ -1,28 +1,28 @@
-import 'dart:convert';
 import 'dart:developer';
 import 'package:chatbot_ai/API/api.dart';
-import 'package:chatbot_ai/CONTROLLER/chat_controller.dart';
-import 'package:chatbot_ai/MODEL/chat_message_model.dart';
 import 'package:flutter/material.dart';
 import 'package:google_generative_ai/google_generative_ai.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class ChatScreenState extends ChangeNotifier {
   List<Content> history = [];
-  // List<ChatMessage> chatHistory = [];
   late final GenerativeModel _model;
   late final ChatSession _chat;
   bool loading = false;
   final ScrollController scrollController = ScrollController();
-  String currentSessionId = ChatHistoryManager.generateSessionId();
-  // final ChatHistory _chatHistory = ChatHistory();
+
   ChatScreenState() {
     _model = GenerativeModel(
       model: 'gemini-pro',
+      // safetySettings: [
+      //   SafetySetting(HarmCategory.sexuallyExplicit, HarmBlockThreshold.medium),
+      //   SafetySetting(HarmCategory.dangerousContent, HarmBlockThreshold.medium),
+      //   SafetySetting(HarmCategory.harassment, HarmBlockThreshold.medium),
+      //   SafetySetting(HarmCategory.unspecified, HarmBlockThreshold.medium),
+      //   SafetySetting(HarmCategory.hateSpeech, HarmBlockThreshold.medium),
+      // ],
       apiKey: Api.api,
     );
     _chat = _model.startChat();
-    loadChatHistory();
   }
 
   void scrollDown() {
@@ -37,28 +37,8 @@ class ChatScreenState extends ChangeNotifier {
     );
   }
 
-  Future<void> loadChatHistory() async {
-    final prefs = await SharedPreferences.getInstance();
-    final historyJson = prefs.getString('chat_history');
-    if (historyJson != null) {
-      //   final List<dynamic> historyList = json.decode(historyJson);
-      //   chatHistory = historyList
-      //       .map((item) => ChatMessage.fromMap(Map<String, dynamic>.from(item)))
-      //       .toList();
-      //   notifyListeners();
-      // }
-    }
-  }
-
-  Future<void> saveChatHistory() async {
-    final prefs = await SharedPreferences.getInstance();
-    // final historyJson =
-    //     json.encode(chatHistory.map((item) => item.toMap()).toList());
-    // await prefs.setString('chat_history', historyJson);
-  }
-
   Future<void> sendChatMessage(
-      String message, int historyIndex) async {
+      String message, int historyIndex, BuildContext context) async {
     loading = true;
     notifyListeners();
     scrollDown();
@@ -73,7 +53,7 @@ class ChatScreenState extends ChangeNotifier {
       await for (var item in response) {
         var text = item.text;
         if (text == null) {
-          // _showError('No response from API.');
+          showError('No response from API.', context);
           return;
         } else {
           loading = false;
@@ -83,26 +63,13 @@ class ChatScreenState extends ChangeNotifier {
           }
 
           history.insert(historyIndex, Content('model', parts));
-
-          // final userMsg = ChatMessage(
-          //     sender: 'user', message: message, sectionNumber: sectionIndex);
-          await ChatHistoryManager.saveChatMessage(ChatMessage(
-              sender: 'user', message: message, sessionId: currentSessionId));
-          await ChatHistoryManager.saveChatMessage(ChatMessage(
-              sender: 'model', message: text, sessionId: currentSessionId));
-          // _chatHistory.addMessage(userMsg);
-          // final modelMsg = ChatMessage(
-          //     sender: 'model', message: text, sectionNumber: sectionIndex);
-          // _chatHistory.addMessage(modelMsg);
-
-          saveChatHistory();
           notifyListeners();
         }
       }
     } catch (e, t) {
       log(e.toString());
       log(t.toString());
-      // _showError(e.toString());
+      showError(e.toString(), context);
       loading = false;
       notifyListeners();
     } finally {
@@ -112,4 +79,24 @@ class ChatScreenState extends ChangeNotifier {
   }
 }
 
-  // void sendChatMessage(String text, int length) {}
+void showError(String message, BuildContext context) {
+  showDialog(
+    context: context,
+    builder: (context) {
+      return AlertDialog(
+        title: const Text('Something went wrong'),
+        content: SingleChildScrollView(
+          child: SelectableText(message),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+            child: const Text('OK'),
+          )
+        ],
+      );
+    },
+  );
+}
