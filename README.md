@@ -12,6 +12,8 @@ Multi-Functional Capabilities: Access a wide range of functionalities, including
 24/7 Availability: Enjoy round-the-clock assistance and support from MindMate AI. Whether it's day or night, MindMate AI is available to address your queries and concerns promptly.
 
 Enhanced Security: Your privacy and security are our top priorities. All interactions with MindMate AI are encrypted to ensure data confidentiality, and your information is kept strictly confidential in compliance with data protection regulations.
+![pVxyGM80wMFb_1024_500](https://github.com/SanjuScript/gemini-ai/assets/132326559/25a29095-d3b2-4362-92cf-e7973a4505a1)
+
 ![Screenshot_2024-03-28-15-21-50-34_4dd536fe9e887ad460f8e9fe40659bdc](https://github.com/SanjuScript/gemini-ai/assets/132326559/f3ea1deb-0fcb-44a8-97c6-6cde05d480f2)
 ![Screenshot_2024-03-28-15-21-28-34_4dd536fe9e887ad460f8e9fe40659bdc](https://github.com/SanjuScript/gemini-ai/assets/132326559/cfa5dc40-4ae8-4927-818c-8a18ebe305bd)
 ![Screenshot_2024-03-28-15-21-21-42_4dd536fe9e887ad460f8e9fe40659bdc](https://github.com/SanjuScript/gemini-ai/assets/132326559/9afdf1c3-f7fb-446f-931f-92e97aa366d2)
