@@ -16,6 +16,11 @@ Welcome to **MindMate AI**, your personal chat assistant powered by **Gemini AI*
 
 ---
 
+## 📱 Download MindMate AI  
+You can download **MindMate AI** from the Play Store: [Download MindMate AI](https://play.google.com/store/apps/details?id=apps.cipher.mindmate)
+
+---
+
 ## 📱 Screenshots  
 Get a glimpse of **MindMate AI** in action:
 
